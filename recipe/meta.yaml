@@ -1,19 +1,18 @@
 {% set name = "azure-storage-file-share" %}
-{% set version = "12.15.0" %}
-
+{% set version = "12.24.0b1" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 0098f1cfa9344c4f781ce0cd504ff3a35255751553c01e720dccd0caa8d8aa2a
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: c677640110fdd97f0ae3d438cad74a4483fca5ef7a74a1fdf6b5f0b7696fcd5b
 
 build:
   number: 0
-  skip: true  # [py<37]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+  skip: true  # [py<39]
 
 requirements:
   host:
@@ -23,10 +22,13 @@ requirements:
     - setuptools
   run:
     - python
-    - azure-core >=1.28.0,<2.0.0
+    - azure-core >=1.30.0
     - cryptography >=2.1.4
-    - typing-extensions >=4.3.0
+    - typing-extensions >=4.6.0
     - isodate >=0.6.1
+  run_constrained:
+    # azure-core[aio]>=1.30.0 -> https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/core/azure-core/pyproject.toml#L32
+    - aiohttp >=3.0
 
 test:
   imports:
